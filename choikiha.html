@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>실습 4 - 반응형 갤러리</title>
+<style>
+  :root {
+    --color-bg: #26c9a0;
+    --color-primary: #3d5afe;
+    --color-primary-dark: #2c40c7;
+    --color-text: #1c1f26;
+    --color-muted: #6b7280;
+    --color-card-bg: #ffffff;
+    --radius: 16px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    padding: 40px 20px;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .header h1 {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--color-muted);
+  }
+  .filters {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  .filter-btn {
+    padding: 8px 16px;
+    border: 1.5px solid #dfe3ea;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .filter-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .gallery-item {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s ease;
+  }
+  .gallery-item:hover {
+    transform: scale(1.03);
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .gallery-item .label {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 6px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  @media (max-width: 480px) {
+    .gallery {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+    }
+    .header h1 { font-size: 18px; }
+  }
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+  }
+  .modal-overlay.show {
+    display: flex;
+  }
+  .modal-box {
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    max-width: 420px;
+    width: 100%;
+  }
+  .modal-box img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .modal-info {
+    padding: 18px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .modal-info h2 {
+    font-size: 16px;
+  }
+  .modal-info span {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .modal-close {
+    border: none;
+    background: #f1f2f6;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--color-muted);
+  }
+  .modal-close:hover {
+    background: #e4e6ec;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="header">
+      <h1>여행 갤러리</h1>
+      <p>카테고리를 눌러 필터링해보세요</p>
+    </header>
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-filter="all">전체</button>
+      <button class="filter-btn" data-filter="mountain">산</button>
+      <button class="filter-btn" data-filter="ocean">바다</button>
+      <button class="filter-btn" data-filter="city">도시</button>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-info">
+        <div>
+          <h2 id="modalTitle"></h2>
+          <span id="modalCategory"></span>
+        </div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+    </div>
+  </div>
+<script>
+  const photos = [
+    { id: 1, category: 'mountain', title: '설악산 일출', place: '강원도', img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400' },
+    { id: 2, category: 'ocean',    title: '제주 바다',   place: '제주도', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400' },
+    { id: 3, category: 'city',     title: '서울 야경',   place: '서울',   img: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400' },
+    { id: 4, category: 'mountain', title: '지리산 능선', place: '경남',   img: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400' },
+    { id: 5, category: 'ocean',    title: '동해 일출',   place: '강원도', img: 'https://images.unsplash.com/photo-1439405326854-014607f694d7?w=400' },
+    { id: 6, category: 'city',     title: '부산 밤거리', place: '부산',   img: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&sat=-50' },
+    { id: 6, category: 'mountain', title: '무등산', place: '광주',   img: 'https://upload.wikimedia.org/wikipedia/commons/4/49/%EB%AC%B4%EB%93%B1%EC%82%B0_%EC%A3%BC%EC%83%81%EC%A0%88%EB%A6%AC%EB%8C%80.jpg?utm_source=ko.wikipedia.org&utm_campaign=imageinfo&utm_content=original' }
+
+
+  ];
+  const gallery = document.getElementById('gallery');
+  const filters = document.getElementById('filters');
+  const modalOverlay = document.getElementById('modalOverlay');
+  const modalImg = document.getElementById('modalImg');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalCategory = document.getElementById('modalCategory');
+  const modalClose = document.getElementById('modalClose');
+  const categoryLabel = { mountain: '산', ocean: '바다', city: '도시' };
+  let currentFilter = 'all'; // 지금 선택된 필터를 기억해두는 상태값
+  function renderGallery() {
+    const filtered = currentFilter === 'all'
+      ? photos
+      : photos.filter(function (p) { return p.category === currentFilter; });
+    gallery.innerHTML = filtered.map(function (photo) {
+      return `
+        <div class="gallery-item" data-id="${photo.id}">
+          <img src="${photo.img}" alt="${photo.title}" loading="lazy">
+          <div class="label">${photo.title}</div>
+        </div>
+      `;
+    }).join('');
+  }
+  filters.addEventListener('click', function (e) {
+    if (!e.target.matches('.filter-btn')) return;
+    document.querySelectorAll('.filter-btn').forEach(function (btn) {
+      btn.classList.remove('active');
+    });
+    e.target.classList.add('active');
+    currentFilter = e.target.dataset.filter;
+    renderGallery();
+  });
+  gallery.addEventListener('click', function (e) {
+    const item = e.target.closest('.gallery-item');
+    if (!item) return;
+    const id = Number(item.dataset.id);
+    const photo = photos.find(function (p) { return p.id === id; });
+    if (!photo) return;
+    modalImg.src = photo.img.replace('w=400', 'w=800'); // 모달에서는 더 큰 이미지 요청
+    modalImg.alt = photo.title;
+    modalTitle.textContent = photo.title;
+    modalCategory.textContent = categoryLabel[photo.category] + ' · ' + photo.place;
+    modalOverlay.classList.add('show');
+  });
+  modalClose.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', function (e) {
+    if (e.target === modalOverlay) closeModal();
+  });
+  function closeModal() {
+    modalOverlay.classList.remove('show');
+  }
+  renderGallery();
+</script>
+</body>
+</html>
