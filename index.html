@@ -3,14 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>작품 모음</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8fafc; /* 화사하고 깔끔한 미니멀 바탕 */
+            color: #0f172a;
+            overflow-x: hidden;
+            position: relative;
+            padding: 40px 24px;
+        }
+
+        /* 화사하고 은은한 미니멀 Glow */
+        .glow-bg {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(192, 132, 252, 0.25) 0%, rgba(165, 180, 252, 0.3) 45%, rgba(248, 250, 252, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            z-index: 0;
+        }
+
+        /* 화이트 메인 프레임 */
+        .main-frame {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 920px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 60px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            padding: 56px 48px;
+            box-shadow: 
+                0 20px 40px -15px rgba(99, 102, 241, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+        }
+
+        /* 좌측 헤더 */
+        .header {
+            text-align: left;
+        }
+
+        .subtitle {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #6366f1;
+            background: rgba(238, 242, 255, 0.9);
+            border: 1px solid rgba(199, 210, 254, 0.6);
+            padding: 5px 12px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        h2 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .desc {
+            color: #64748b;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* 우측 라이트 인덱스 리스트 */
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .link-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .index {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #6366f1;
+            font-mono: monospace;
+        }
+
+        .name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            transition: color 0.25s ease;
+        }
+
+        .arrow {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            transition: all 0.25s ease;
+            transform: translateX(-4px);
+        }
+
+        /* 호버 스타일 */
+        .link-card:hover {
+            padding-left: 16px;
+            padding-right: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-bottom-color: #6366f1;
+        }
+
+        .link-card:hover .name {
+            color: #4f46e5;
+        }
+
+        .link-card:hover .arrow {
+            color: #4f46e5;
+            transform: translateX(0);
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .main-frame {
+                grid-template-columns: 1fr;
+                gap: 36px;
+                padding: 36px 24px;
+            }
+
+            .header {
+                text-align: left;
+            }
+
+            h2 {
+                font-size: 2.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>작품 모음</h2>
-    <a href="kmg.html">김민규</a><br>
-    <a href="csj.html">채서진</a><br>
-    <a href="ckh.html">최기하</a><br>
-    <a href="lcg.html">이충길</a><br>
-    <a href="CSY.html">최서연</a>
+
+    <div class="glow-bg" id="glow"></div>
+
+    <div class="main-frame">
+        <div class="header">
+            <span class="subtitle">Spring Collection</span>
+            <h2>작품 모음</h2>
+            <p class="desc">참여 작가들의 아카이브 페이지입니다.</p>
+        </div>
+
+        <div class="link-list">
+            <a href="kmg.html" class="link-card">
+                <div class="item-info">
+                    <span class="index">01</span>
+                    <span class="name">김민규</span>
+                </div>
+                <span class="arrow">➔</span>
+            </a>
+            <a href="csj.html" class="link-card">
+                <div class="item-info">
+                    <span class="index">02</span>
+                    <span class="name">채서진</span>
+                </div>
+                <span class="arrow">➔</span>
+            </a>
+            <a href="ckh.html" class="link-card">
+                <div class="item-info">
+                    <span class="index">03</span>
+                    <span class="name">최기하</span>
+                </div>
+                <span class="arrow">➔</span>
+            </a>
+            <a href="lcg.html" class="link-card">
+                <div class="item-info">
+                    <span class="index">04</span>
+                    <span class="name">이충길</span>
+                </div>
+                <span class="arrow">➔</span>
+            </a>
+            <a href="CSY.html" class="link-card">
+                <div class="item-info">
+                    <span class="index">05</span>
+                    <span class="name">최서연</span>
+                </div>
+                <span class="arrow">➔</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const glow = document.getElementById('glow');
+        window.addEventListener('mousemove', (e) => {
+            glow.style.left = `${e.clientX}px`;
+            glow.style.top = `${e.clientY}px`;
+        });
+    </script>
 </body>
 </html>
