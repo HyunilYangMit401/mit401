@@ -3,14 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>작품 모음</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0fdf4;
+            overflow: hidden;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* 인터랙티브 마우스 빛 효과 */
+        .glow-bg {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(187, 247, 208, 0.6) 0%, rgba(221, 214, 254, 0.5) 50%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 460px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 28px;
+            padding: 40px 28px;
+            box-shadow: 
+                0 20px 40px -15px rgba(99, 102, 241, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .subtitle {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #059669;
+            background: rgba(209, 250, 229, 0.9);
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #0d9488 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .link-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            perspective: 1000px;
+        }
+
+        .link-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(99, 102, 241, 0.15);
+            border-radius: 18px;
+            color: #1e293b;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .link-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 24px -6px rgba(99, 102, 241, 0.2);
+            color: #4f46e5;
+        }
+
+        .arrow-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.08);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .arrow {
+            font-size: 0.85rem;
+            color: #6366f1;
+            transition: transform 0.3s ease;
+        }
+
+        .link-card:hover .arrow-wrapper {
+            background: #6366f1;
+        }
+
+        .link-card:hover .arrow {
+            color: #ffffff;
+            transform: translateX(3px);
+        }
+
+        /* 클릭 물결(Ripple) 효과 스판 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.3);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>작품 모음</h2>
-    <a href="kmg.html">김민규</a><br>
-    <a href="csj.html">채서진</a><br>
-    <a href="ckh.html">최기하</a><br>
-    <a href="lcg.html">이충길</a><br>
-    <a href="CSY.html">최서연</a>
+    <div class="glow-bg" id="glow"></div>
+
+    <div class="container">
+        <div class="header">
+            <span class="subtitle">Spring Collection</span>
+            <h2>작품 모음</h2>
+        </div>
+        <div class="link-list">
+            <a href="kmg.html" class="link-card">
+                <span>김민규</span>
+                <div class="arrow-wrapper"><span class="arrow">➔</span></div>
+            </a>
+            <a href="csj.html" class="link-card">
+                <span>채서진</span>
+                <div class="arrow-wrapper"><span class="arrow">➔</span></div>
+            </a>
+            <a href="ckh.html" class="link-card">
+                <span>최기하</span>
+                <div class="arrow-wrapper"><span class="arrow">➔</span></div>
+            </a>
+            <a href="lcg.html" class="link-card">
+                <span>이충길</span>
+                <div class="arrow-wrapper"><span class="arrow">➔</span></div>
+            </a>
+            <a href="CSY.html" class="link-card">
+                <span>최서연</span>
+                <div class="arrow-wrapper"><span class="arrow">➔</span></div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 1. 마우스 이동 시 배경 빛 추적
+        const glow = document.getElementById('glow');
+        window.addEventListener('mousemove', (e) => {
+            glow.style.left = `${e.clientX}px`;
+            glow.style.top = `${e.clientY}px`;
+        });
+
+        // 2. 카드 3D 틸트(Tilt) 애니메이션 & 클릭 물결 효과
+        const cards = document.querySelectorAll('.link-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -8;
+                const rotateY = ((x - centerX) / centerX) * 8;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(5px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            });
+
+            card.addEventListener('click', function(e) {
+                const rect = card.getBoundingClientRect();
+                const circle = document.createElement('span');
+                const diameter = Math.max(rect.width, rect.height);
+                const radius = diameter / 2;
+
+                circle.style.width = circle.style.height = `${diameter}px`;
+                circle.style.left = `${e.clientX - rect.left - radius}px`;
+                circle.style.top = `${e.clientY - rect.top - radius} radius}px`;
+                circle.classList.add('ripple');
+
+                const ripple = card.getElementsByClassName('ripple')[0];
+                if (ripple) {
+                    ripple.remove();
+                }
+
+                card.appendChild(circle);
+            });
+        });
+    </script>
 </body>
 </html>
